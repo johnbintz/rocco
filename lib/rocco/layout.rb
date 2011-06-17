@@ -19,6 +19,10 @@ class Rocco::Layout < Mustache
     @doc.file
   end
 
+  def styles
+    File.read(File.expand_path('../docco.css', __FILE__))
+  end
+
   def sections
     num = 0
     @doc.sections.map do |docs,code|
@@ -46,7 +50,7 @@ class Rocco::Layout < Mustache
 
   def sources
     currentpath = Pathname.new( File.dirname( @doc.file ) )
-    @doc.sources.sort.map do |source|
+    @doc.sources.sort { |left, right| File.split(left).last <=> File.split(right).last }.map do |source|
       htmlpath = Pathname.new( source.sub( Regexp.new( "#{File.extname(source)}$"), ".html" ) )
 
       {
